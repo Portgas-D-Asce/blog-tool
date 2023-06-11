@@ -1,23 +1,9 @@
 import argparse
 
-from category import Category
 
-
-def category_op(args):
-    print("category: %s %s" % (args.operate, args.category_id))
-    category = Category(args.category_id, "xxx", "yyy", [])
-    if(args.operate == "query"):
-        category.query()
-    else:
-        print("to be achieved.")
-
-
-def tag_op(args):
-    print("tag")
-
-
-def article_op(args):
-    print("article")
+from client.category import CategoryClient
+from client.tag import TagClient
+from client.article import ArticleClient
 
 
 def main():
@@ -29,21 +15,21 @@ def main():
         "--operate", choices=["add", "delete", "query", "update"],
         help="operate type", dest="operate", required=True)
     parser_category.add_argument("category_id", type=int)
-    parser_category.set_defaults(func=category_op)
+    parser_category.set_defaults(func=CategoryClient.callback)
 
     parser_tag = sub_parsers.add_parser("tag", help="sub command tag", description="sub command tag")
     parser_tag.add_argument(
         "--operate", choices=["add", "delete", "query", "update"],
         help="operate type", dest="operate", required=True)
     parser_tag.add_argument("tag_id", type=int)
-    parser_tag.set_defaults(func=tag_op)
+    parser_tag.set_defaults(func=TagClient.callback)
 
     parser_article = sub_parsers.add_parser("article", help="sub command article", description="sub command article")
     parser_article.add_argument(
         "--operate", choices=["add", "delete", "query", "update"],
         help="operate type", dest="operate", required=True)
     parser_article.add_argument("article_name")
-    parser_article.set_defaults(func=article_op)
+    parser_article.set_defaults(func=ArticleClient.callback)
 
     args = parser.parse_args()
     args.func(args)
