@@ -19,5 +19,16 @@ class Client():
 
         print("request succeeded: %s." % x.content.decode())
         return 0, x.content
+
+    def request_with_file(self, method, url, files, data=None):
+        url = self.base + url
+        print("url: %s" % url)
+        x = requests.request(method=method, url=url, files=files, data=data)
+        if(x.status_code != 200):
+            print("request failed: %s." % x.content)
+            return -1, None
+
+        print("request succeeded: %s." % x.content.decode())
+        return 0, x.content
         
             
