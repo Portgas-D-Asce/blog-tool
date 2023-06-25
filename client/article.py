@@ -1,3 +1,4 @@
+import json
 from client.client import Client
 
 
@@ -6,57 +7,41 @@ class ArticleClient:
         self.client = Client()
         self.work_dir = "note"
 
-    def add(self, article):
+    def add(self, data, files):
         method = "POST"
         url = "/v1/articles"
-        data = {
-            "cid": 3,
-            "tags": "1,2,3,4,5,6,7,8",
-            "description": "python tool test"
-        }
-        files=[('file',('深入理解变参函数.md',open('Note/C&C++/深入理解变参函数/深入理解变参函数.md','rb'),'application/octet-stream'))]
-        self.client.request_with_file(method, url, files, data)
+        return self.client.request_with_file(method, url, files, data)
     
-    def delete_by_id(self, id):
+    def delete(self, id):
         method = "DELETE"
-        url = "/v1/articles/%s" % id
-        self.client.request(method, url)
-
-    def delete_by_name(self, name):
-        method = "DELETE"
-        url = "/v1/articles?article_name=%s" % name 
-        self.client.request(method, url)
-    
-    def query_all(self):
-        method = "GET"
-        url = "/v1/articles"
-        self.client.request(method, url)
-    
-    def query_by_id(self, id):
-        method = "GET"
-        url = "/v1/articles/%s" % id
-        self.client.request(method, url)
+        url = "/v1/articles/%s" % id 
+        return self.client.request(method, url)
     
     def query_by_name(self, name):
         method = "GET"
         url = "/v1/articles?article_name=%s" % name
-        self.client.request(method, url)
+        return self.client.request(method, url)
 
-    def query_by_category_id(self, category_id):
-        method = "GET"
-        url = "/v1/articles?category_id=%s" % category_id
-        self.client.request(method, url)
-
-    def query_by_tag_id(self, tag_id):
-        method = "GET"
-        url = "/v1/articles?tag_id=%s" % tag_id
-        self.client.request(method, url)
-
-    def update(self, id, article):
+    def update(self, id, data, files):
         method = "PUT"
-        url = "/v1/article/%s" % id
-        self.client.request(method, url, article)
+        url = "/v1/articles/%s" % id
+        return self.client.request_with_file(method, url, files, data)
     
+    @staticmethod
+    def _find_article_by_name(name):
+        dir = "/Users/pk/Note/%s" % name
+
+        meta_path = "%s/meta.json" % dir
+        print(meta_path)
+        with open(meta_path) as fp:
+            data = json.load(fp)
+
+        name += ".md"
+        article_path = "%s/%s" % (dir, name)
+        files=[('file', (name, open(article_path, 'rb'), 'application/octet-stream'))]
+
+        return data, files
+
     @staticmethod
     def callback(args):
         op = args.operate
@@ -64,15 +49,17 @@ class ArticleClient:
         print("article: %s %s" % (op, id))
         article_client = ArticleClient()
         if op == "add":
-            xxx = '{"name": "tool_test", "description": "tool_desc"}'
-            article_client.add(xxx)
+            data, files = ArticleClient._find_article_by_name(name)
+            article_client.add(data, files)
         elif op == "delete":
-            article_client.delete_by_name(name)
+            _, data = article_client.query_by_name(name)
+            article_client.delete(data[0].get("id"))
         elif op == "query":
-            article_client.query_by_name(name)
+            _, data = article_client.query_by_name(name)
         elif op == "update":
-            xxx = '{"id":"1", "name": "tool_test", "description": "tool_desc"}'
-            article_client.update(xxx)
+            data, files = ArticleClient._find_article_by_name(name)
+            _, articles = article_client.query_by_name(name)
+            article_client.update(articles[0].get("id"), data, files)
         else:
             print("error operate")
 

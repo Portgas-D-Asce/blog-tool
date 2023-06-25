@@ -1,3 +1,4 @@
+import json
 import requests
 
 
@@ -18,7 +19,7 @@ class Client():
             return -1, None
 
         print("request succeeded: %s." % x.content.decode())
-        return 0, x.content
+        return 0, json.loads(x.content)
 
     def request_with_file(self, method, url, files, data=None):
         url = self.base + url
@@ -29,6 +30,6 @@ class Client():
             return -1, None
 
         print("request succeeded: %s." % x.content.decode())
-        return 0, x.content
+        return 0, json.loads(x.content)
         
             

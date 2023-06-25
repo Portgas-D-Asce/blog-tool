@@ -10,22 +10,22 @@ class TagClient:
     def add(self, tag):
         method = "POST"
         url = "/v1/tags"
-        self.client.request(method, url, json.dumps(tag))
+        return self.client.request(method, url, json.dumps(tag))
    
     def delete(self, id):
         method = "DELETE"
         url = "/v1/tags/%s" % id
-        self.client.request(method, url)
+        return self.client.request(method, url)
     
     def query(self, id):
         method = "GET"
         url = "/v1/tags/%s" % id
-        self.client.request(method, url)
+        return self.client.request(method, url)
     
     def update(self, id, tag):
         method = "PUT"
         url = "/v1/tags/%s" % id
-        self.client.request(method, url, json.dumps(tag))
+        return self.client.request(method, url, json.dumps(tag))
     
     @staticmethod
     def _find_tag_by_id(id):
