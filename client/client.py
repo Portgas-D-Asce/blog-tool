@@ -14,7 +14,7 @@ class Client():
         url = self.base + url
         print("url: %s" % url)
         x = requests.request(method=method, url=url, data=data, headers=header)
-        if(x.status_code != 200):
+        if x.status_code < 200 or x.status_code >= 300:
             print("request failed: %s." % x.content)
             return -1, None
 
@@ -25,7 +25,7 @@ class Client():
         url = self.base + url
         print("url: %s" % url)
         x = requests.request(method=method, url=url, files=files, data=data)
-        if(x.status_code != 200):
+        if x.status_code < 200 or x.status_code >= 300:
             print("request failed: %s." % x.content)
             return -1, None
 

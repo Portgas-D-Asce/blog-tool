@@ -53,13 +53,13 @@ class ArticleClient:
             article_client.add(data, files)
         elif op == "delete":
             _, data = article_client.query_by_name(name)
-            article_client.delete(data[0].get("id"))
+            article_client.delete(data.get("id"))
         elif op == "query":
             _, data = article_client.query_by_name(name)
         elif op == "update":
             data, files = ArticleClient._find_article_by_name(name)
             _, articles = article_client.query_by_name(name)
-            article_client.update(articles[0].get("id"), data, files)
+            article_client.update(articles.get("id"), data, files)
         else:
             print("error operate")
 
