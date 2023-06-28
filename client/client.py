@@ -5,7 +5,7 @@ import requests
 class Client():
     def __init__(self, base=None):
         # self.base = base
-        self.base = "http://localhost:8080/blog/api"
+        self.base = "https://localhost:8080/blog/api"
     
     def request(self, method, url, data=None):
         header = {
@@ -13,23 +13,28 @@ class Client():
         }
         url = self.base + url
         print("url: %s" % url)
-        x = requests.request(method=method, url=url, data=data, headers=header)
+        x = requests.request(method=method, url=url, data=data, headers=header, verify=False)
         if x.status_code < 200 or x.status_code >= 300:
             print("request failed: %s." % x.content)
             return -1, None
 
-        print("request succeeded: %s." % x.content.decode())
-        return 0, json.loads(x.content)
+        data = x.content.decode()
+        print("request succeeded: %s." % data)
+        if data != "":
+            data = json.loads(data)
+        return 0, data
 
     def request_with_file(self, method, url, files, data=None):
         url = self.base + url
         print("url: %s" % url)
-        x = requests.request(method=method, url=url, files=files, data=data)
+        x = requests.request(method=method, url=url, files=files, data=data, verify=False)
         if x.status_code < 200 or x.status_code >= 300:
             print("request failed: %s." % x.content)
             return -1, None
 
-        print("request succeeded: %s." % x.content.decode())
-        return 0, json.loads(x.content)
-        
-            
+        data = x.content.decode()
+        print("request succeeded: %s." % data)
+        if data != "":
+            data = json.loads(data)
+        return 0, data
+ 
