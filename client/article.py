@@ -1,4 +1,6 @@
+import os
 import json
+
 from client.client import Client
 
 
@@ -38,7 +40,15 @@ class ArticleClient:
 
         name += ".md"
         article_path = "%s/%s" % (dir, name)
-        files=[('file', (name, open(article_path, 'rb'), 'application/octet-stream'))]
+        files = [('article', (name, open(article_path, 'rb'), 'application/octet-stream'))]
+
+        image_dir = "%s/images" % dir
+        image_names = os.listdir(image_dir)
+        for image_name in image_names:
+            if image_name.startswith("."):
+                continue
+            image_path = "%s/%s" % (image_dir, image_name)
+            files.append(('images', (image_name, open(image_path, 'rb'), 'application/octet-stream')))
 
         return data, files
 
