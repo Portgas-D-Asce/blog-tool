@@ -16,14 +16,14 @@ class Client():
         print("url: %s" % url)
         x = requests.request(method=method, url=url, data=data, headers=header, verify=False)
         print("status: %s." % x.status_code)
-        if x.status_code < 200 or x.status_code >= 300:
-            print("request failed: %s." % x.content)
-            return -1, None
-
         data = x.content.decode()
-        print("request succeeded: %s." % data)
         if data != "":
             data = json.loads(data)
+        if x.status_code < 200 or x.status_code >= 300:
+            print("request failed: %s." % data)
+            return -1, data
+
+        print("request succeeded: %s." % data)
         return 0, data
 
     def request_with_file(self, method, url, files, data=None):
@@ -34,13 +34,13 @@ class Client():
         }
         x = requests.request(headers=header, method=method, url=url, files=files, data=data, verify=False)
         print("status: %s." % x.status_code)
-        if x.status_code < 200 or x.status_code >= 300:
-            print("request failed: %s." % x.content)
-            return -1, x.content
-
         data = x.content.decode()
-        print("request succeeded: %s." % data)
         if data != "":
             data = json.loads(data)
+        if x.status_code < 200 or x.status_code >= 300:
+            print("request failed: %s." % data)
+            return -1, data
+
+        print("request succeeded: %s." % data)
         return 0, data
  
