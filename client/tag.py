@@ -5,7 +5,6 @@ from client.client import Client
 class TagClient:
     def __init__(self):
         self.client = Client()
-        self.work_file = "tag.json"
 
     def add(self, tag):
         method = "POST"
@@ -29,7 +28,7 @@ class TagClient:
     
     @staticmethod
     def _find_tag_by_id(id):
-        tags_path = "/Users/pk/Note/tags.json"
+        tags_path = "../../Note/tags.json"
         with open(tags_path) as fp:
             tags = json.load(fp)
 

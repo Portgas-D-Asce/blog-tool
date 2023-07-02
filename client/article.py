@@ -7,7 +7,6 @@ from client.client import Client
 class ArticleClient:
     def __init__(self):
         self.client = Client()
-        self.work_dir = "note"
 
     def add(self, data, files):
         method = "POST"
@@ -31,7 +30,7 @@ class ArticleClient:
     
     @staticmethod
     def _find_article_by_name(name):
-        dir = "/Users/pk/Note/%s" % name
+        dir = "../../Note/%s" % name
 
         meta_path = "%s/meta.json" % dir
         print(meta_path)
@@ -68,8 +67,8 @@ class ArticleClient:
             _, data = article_client.query_by_name(name)
         elif op == "update":
             data, files = ArticleClient._find_article_by_name(name)
-            _, articles = article_client.query_by_name(name)
-            article_client.update(articles.get("id"), data, files)
+            _, article = article_client.query_by_name(name)
+            article_client.update(article.get("id"), data, files)
         else:
             print("error operate")
 

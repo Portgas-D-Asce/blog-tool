@@ -30,7 +30,7 @@ class CategoryClient():
         
     @staticmethod
     def _find_category_by_id(id):
-        categories_path = "/Users/pk/Note/categories.json"
+        categories_path = "../../Note/categories.json"
         with open(categories_path) as fp:
             root = json.load(fp)
 
