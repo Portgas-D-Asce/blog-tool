@@ -4,8 +4,7 @@ import requests
 
 class Client():
     def __init__(self, base=None):
-        # self.base = base
-        self.base = "https://localhost:8080/blog/api"
+        self.base = "https://175.178.25.102:8080/blog/api"
     
     def request(self, method, url, data=None):
         header = {
