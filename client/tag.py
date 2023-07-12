@@ -28,7 +28,7 @@ class TagClient:
     
     @staticmethod
     def _find_tag_by_id(id):
-        tags_path = "../../Note/tags.json"
+        tags_path = "../note/tags.json"
         with open(tags_path) as fp:
             tags = json.load(fp)
 

@@ -30,7 +30,7 @@ class ArticleClient:
     
     @staticmethod
     def _find_article_by_name(name):
-        dir = "../../Note/%s" % name
+        dir = "../note/%s" % name
 
         meta_path = "%s/meta.json" % dir
         print(meta_path)
