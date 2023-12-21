@@ -66,7 +66,7 @@ class ArticleClient:
     @staticmethod
     def _find_article_by_name(name):
         dir = "../note/%s" % name
-        meta_path = "%s/meta.json" % dir
+        meta_path = "%s/meta.md" % dir
         print(meta_path)
         with open(meta_path) as fp:
             data = json.load(fp)
