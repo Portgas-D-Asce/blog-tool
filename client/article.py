@@ -13,14 +13,29 @@ class ArticleClient:
         url = "/v1/articles"
         return self.client.request_with_file(method, url, files, data)
     
-    def delete(self, id):
-        method = "DELETE"
-        url = "/v1/articles/%s" % id 
+    def query_by_id(self, id):
+        method = "GET"
+        url = "/v1/articles/%s" % id
         return self.client.request(method, url)
     
     def query_by_name(self, name):
         method = "GET"
         url = "/v1/articles?article_name=%s" % name
+        return self.client.request(method, url)
+    
+    def query_by_tid(self, tid):
+        method = "GET"
+        url = "/v1/articles?tag_id=%s" % tid
+        return self.client.request(method, url)
+    
+    def query_by_cid(self, cid, recursively):
+        method = "GET"
+        url = "/v1/articles?category_id=%s&%s" % (cid, recursively)
+        return self.client.request(method, url)
+    
+    def query_all(self):
+        method = "GET"
+        url = "/v1/articles"
         return self.client.request(method, url)
 
     def update(self, id, data, files):
@@ -28,10 +43,29 @@ class ArticleClient:
         url = "/v1/articles/%s" % id
         return self.client.request_with_file(method, url, files, data)
     
+    def delete_by_id(self, id):
+        method = "DELETE"
+        url = "/v1/articles/%s" % id
+        return self.client.request(method, url)
+    
+    def delete_by_tid(self, tid):
+        method = "DELETE"
+        url = "/v1/articles?tag_id=%s" % tid
+        return self.client.request(method, url)
+    
+    def delete_by_cid(self, cid, recursively):
+        method = "DELETE"
+        url = "/v1/articles?category_id=%s&%s" % (cid, recursively)
+        return self.client.request(method, url)
+    
+    def delete_all(self):
+        method = "DELETE"
+        url = "/v1/articles"
+        return self.client.request(method, url)
+    
     @staticmethod
     def _find_article_by_name(name):
         dir = "../note/%s" % name
-
         meta_path = "%s/meta.json" % dir
         print(meta_path)
         with open(meta_path) as fp:
@@ -52,25 +86,43 @@ class ArticleClient:
         return data, files
 
     @staticmethod
-    def callback(args):
-        op = args.operate
-        name = args.article_name
-        print("article: %s %s" % (op, id))
-        article_client = ArticleClient()
-        if op == "add":
-            data, files = ArticleClient._find_article_by_name(name)
-            article_client.add(data, files)
-        elif op == "delete":
-            _, data = article_client.query_by_name(name)
-            article_client.delete(data.get("id"))
-        elif op == "query":
-            _, data = article_client.query_by_name(name)
-        elif op == "update":
-            data, files = ArticleClient._find_article_by_name(name)
-            _, article = article_client.query_by_name(name)
-            article_client.update(article.get("id"), data, files)
+    def list(args):
+        print("article list: %s" % args)
+        client = ArticleClient()
+        if args.name:
+            client.query_by_name(args.name)
+        elif args.cid:
+            client.query_by_cid(args.cid, args.recursively)
+        elif args.tid:
+            client.query_by_tid(args.tid)
         else:
-            print("error operate")
-
+            client.query_all()
     
+    @staticmethod
+    def modify(args):
+        print("article modify: %s" % args)
+        client = ArticleClient()
+        data, files = client._find_article_by_name(args.name)
+        _, article = client.query_by_name(args.name)
+        client.update(article.get("id"), data, files)
 
+    @staticmethod
+    def publish(args):
+        print("article publish: %s" % args)
+        client = ArticleClient()
+        data, files = client._find_article_by_name(args.name)
+        client.add(data, files)
+
+    @staticmethod
+    def unpublish(args):
+        print("article unpublish: %s" % args)
+        client = ArticleClient()
+        if args.name:
+            _, article = client.query_by_name(args.name)
+            client.delete_by_id(article.get("id"))
+        elif args.cid:
+            client.delete_by_cid(args.cid, args.recursively)
+        elif args.tid:
+            client.delete_by_tid(args.tid)
+        else:
+            client.delete_all()
